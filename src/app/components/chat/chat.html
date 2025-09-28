@@ -1,0 +1,60 @@
+<div class="chat-container">
+    <div class="chat-header">
+      <h1>Mobile Shopping Agent 📱</h1>
+    </div>
+    <div class="message-container" #messageContainer>
+      <div *ngFor="let msg of messages" class="message-wrapper" [ngClass]="{'user-message': msg.sender === 'user', 'bot-message': msg.sender === 'bot'}">
+        <div class="message-bubble">
+          <p *ngIf="msg.sender === 'user'">{{ msg.text }}</p>
+  
+          <ng-container *ngIf="msg.sender === 'bot' && msg.apiResponse">
+            <p class="bot-explanation" [innerHTML]="formatExplanation(msg.apiResponse.explanation)"></p>
+  
+            <ng-container *ngIf="msg.apiResponse.data && msg.apiResponse.data.length > 0">
+              <div *ngIf="msg.apiResponse.action === 'compare'" class="comparison-grid">
+                <div *ngFor="let phone of msg.apiResponse.data" class="comparison-card">
+                  <h3>{{ phone.name }}</h3>
+                  <ul>
+                    <li><strong>Price:</strong> ₹{{ phone.price_inr.toLocaleString('en-IN') }}</li>
+                    <li><strong>Display:</strong> {{ phone.display.size_inches }}" {{ phone.display.type }}</li>
+                    <li><strong>Camera:</strong> {{ phone.camera.main_mp }}MP Main</li>
+                    <li><strong>Battery:</strong> {{ phone.battery.capacity_mah }}mAh</li>
+                    <li><strong>Chipset:</strong> {{ phone.chipset }}</li>
+                    <li><strong>Weight:</strong> {{ phone.weight_g }}grams</li>
+                  </ul>
+                </div>
+              </div>
+  
+              <div *ngIf="msg.apiResponse.action === 'search' || msg.apiResponse.action === 'details'" class="product-cards-container">
+                <div *ngFor="let phone of msg.apiResponse.data" class="product-card">
+                  <h3>{{ phone.name }}</h3>
+                  <p class="price">₹{{ phone.price_inr.toLocaleString('en-IN') }}</p>
+                  <ul>
+                    <li><strong>Display:</strong> {{ phone.display.size_inches }}" {{ phone.display.refresh_hz }}Hz {{ phone.display.type }}</li>
+                    <li><strong>Camera:</strong> {{ phone.camera.main_mp }}MP Main (OIS: {{ phone.camera.ois ? '✅' : '❌' }})</li>
+                    <li><strong>Battery:</strong> {{ phone.battery.capacity_mah }}mAh ({{ phone.battery.charging_watts }}W)</li>
+                    <li><strong>Chipset:</strong> {{ phone.chipset }}</li>
+                    <li><strong>Memory:</strong> {{ phone.memory.ram_gb }}GB / {{ phone.memory.storage_gb }}GB</li>
+                    <li><strong>Weight:</strong> {{ phone.weight_g }}grams</li>
+                  </ul>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <div *ngIf="isLoading" class="message-wrapper bot-message">
+          <div class="message-bubble">
+              <div class="typing-indicator">
+                  <span></span><span></span><span></span>
+              </div>
+          </div>
+      </div>
+    </div>
+    <div class="chat-input-area">
+      <form (ngSubmit)="sendMessage()">
+        <input type="text" [(ngModel)]="newMessage" name="newMessage" placeholder="Ask me about phones..." autocomplete="off">
+        <button type="submit" [disabled]="isLoading || newMessage.trim() === ''">Send</button>
+      </form>
+    </div>
+  </div>

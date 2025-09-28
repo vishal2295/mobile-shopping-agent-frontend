@@ -1,0 +1,20 @@
+// src/app/services/chat.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { ApiResponse } from '../models/chat.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ChatService {
+  // The URL of your Python backend
+  private backendUrl = 'http://127.0.0.1:8000/api/chat';
+
+  constructor(private http: HttpClient) { }
+
+  sendMessage(query: string): Observable<ApiResponse> {
+    const requestBody = { query };
+    return this.http.post<ApiResponse>(this.backendUrl, requestBody);
+  }
+}
