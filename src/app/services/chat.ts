@@ -9,7 +9,7 @@ import { ApiResponse } from '../models/chat.model';
 })
 export class ChatService {
   // The URL of your Python backend
-  private backendUrl = 'http://127.0.0.1:8000/api/chat';
+  private backendUrl = 'https://mobile-shopping-agent-backend.vercel.app/api/chat';
 
   constructor(private http: HttpClient) { }
 
